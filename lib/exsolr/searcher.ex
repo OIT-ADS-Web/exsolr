@@ -31,6 +31,7 @@ defmodule Exsolr.Searcher do
   q: "*:*"
   start: 0
   rows: 10
+  edismax: "popularity"
 
   ## Examples
 
@@ -42,6 +43,9 @@ defmodule Exsolr.Searcher do
 
       iex> Exsolr.Searcher.build_solr_query(q: "roses", fq: ["blue", "violet"], wt: "xml")
       "?start=0&rows=10&q=roses&fq=blue&fq=violet&wt=xml"
+
+      iex> Exsolr.Searcher.build_solr_query(q: "roses", edismax: "popularity")
+      "?wt=json&start=0&rows=10&q=roses&defType=edismax&boost=popularity}
 
   """
   def build_solr_query(params) do
@@ -61,7 +65,7 @@ defmodule Exsolr.Searcher do
   end
 
   defp default_parameters do
-    [wt: "json", q: "*:*", start: 0, rows: 10]
+    [wt: "json", q: "*:*", start: 0, rows: 10, edismax: nil]
   end
 
   defp build_solr_query_parameter(_, []), do: nil
@@ -72,6 +76,12 @@ defmodule Exsolr.Searcher do
   end
   defp build_solr_query_parameter(:q, value) do
     "q=#{URI.encode_www_form(value)}"
+  end
+  defp build_solr_query_parameter(:edismax, value) do
+    case value do
+      nil -> nil
+      _ -> "defType=edismax&boost=#{URI.encode_www_form(value)}"
+    end
   end
   defp build_solr_query_parameter(key, value) do
     [Atom.to_string(key), value]
@@ -98,7 +108,7 @@ defmodule Exsolr.Searcher do
     end
   end
 
-  defp extract_mlt_result(mlt) do 
+  defp extract_mlt_result(mlt) do
     result =
     for k <- Map.keys(mlt), do: get_in(mlt, [k, "docs"])
     result |> List.flatten
