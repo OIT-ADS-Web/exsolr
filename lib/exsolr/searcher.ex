@@ -80,7 +80,7 @@ defmodule Exsolr.Searcher do
   defp build_solr_query_parameter(:edismax, value) do
     case value do
       nil -> nil
-      _ -> "defType=edismax&boost=#{URI.encode_www_form(value)}"
+      _ -> "defType=edismax&#{URI.encode_www_form(value)}"
     end
   end
   defp build_solr_query_parameter(key, value) do
