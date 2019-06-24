@@ -46,9 +46,9 @@ defmodule Exsolr.Indexer do
     update_request(xml_headers, commit_xml_body)
   end
 
-  defp update_request(xml_headers, body) do
+  defp update_request(headers, body) do
     Config.update_url
-    |> HTTPoison.post(body, xml_headers, Config.options)
+    |> HTTPoison.post(body, headers, Config.options)
     |> HttpResponse.body
   end
 
