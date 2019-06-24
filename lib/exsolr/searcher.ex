@@ -91,7 +91,7 @@ defmodule Exsolr.Searcher do
   def do_search(solr_query) do
     solr_query
     |> build_solr_url
-    |> HTTPoison.get(headers, options)
+    |> HTTPoison.get(Config.headers, Config.options)
     |> HttpResponse.body
   end
 

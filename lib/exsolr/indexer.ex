@@ -8,7 +8,7 @@ defmodule Exsolr.Indexer do
 
   def add(document) do
     json_docs_update_url
-    |> HTTPoison.post(encode(document), json_headers, options)
+    |> HTTPoison.post(encode(document), json_headers, Config.options)
     |> HttpResponse.body
   end
 
@@ -48,7 +48,7 @@ defmodule Exsolr.Indexer do
 
   defp update_request(xml_headers, body) do
     Config.update_url
-    |> HTTPoison.post(body, xml_headers, options)
+    |> HTTPoison.post(body, xml_headers, Config.options)
     |> HttpResponse.body
   end
 
