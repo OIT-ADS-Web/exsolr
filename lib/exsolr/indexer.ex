@@ -8,7 +8,7 @@ defmodule Exsolr.Indexer do
 
   def add(document) do
     json_docs_update_url
-    |> HTTPoison.post(encode(document), json_headers)
+    |> HTTPoison.post(encode(document), json_headers, options)
     |> HttpResponse.body
   end
 
@@ -46,9 +46,9 @@ defmodule Exsolr.Indexer do
     update_request(xml_headers, commit_xml_body)
   end
 
-  defp update_request(headers, body) do
+  defp update_request(xml_headers, body) do
     Config.update_url
-    |> HTTPoison.post(body, headers)
+    |> HTTPoison.post(body, xml_headers, options)
     |> HttpResponse.body
   end
 
@@ -85,7 +85,7 @@ defmodule Exsolr.Indexer do
   defp json_docs_update_url, do: "#{Config.update_url}/json/docs"
 
   defp encode(document) do
-    {:ok, body} = Poison.encode(document)
+    {:ok, body} = Jason.encode(document)
     body
   end
 end

@@ -16,7 +16,9 @@ defmodule Exsolr.Config do
       hostname: hostname(),
       port: port(),
       core: core(),
-      scheme: scheme()
+      scheme: scheme(),
+      headers: headers(),
+      options: options()
     }
   end
 
@@ -24,6 +26,8 @@ defmodule Exsolr.Config do
   def port, do: Application.get_env(:exsolr, :port)
   def core, do: Application.get_env(:exsolr, :core)
   def scheme, do: Application.get_env(:exsolr, :scheme, "http")
+  def headers, do: Application.get_env(:exsolr, :headers, [])
+  def options, do: Application.get_env(:exsolr, :options, [])
 
   @doc """
   Returns the base url to do `select` queries to solr
