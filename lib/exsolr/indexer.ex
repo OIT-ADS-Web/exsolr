@@ -29,6 +29,22 @@ defmodule Exsolr.Indexer do
     update_request(json_headers, delete_by_id_json_body(id))
   end
 
+    @doc """
+  Delete the document with query `query` from the solr index
+
+  From the Solr docs:
+
+  The JSON update format allows for a simple delete-by-query.
+
+
+    { "delete": { "query": "field:value" } }
+
+  https://cwiki.apache.org/confluence/display/solr/Uploading+Data+with+Index+Handlers#UploadingDatawithIndexHandlers-JSONFormattedIndexUpdates
+  """
+  def delete_by_query(field_value) do
+    update_request(json_headers, delete_by_query_json_body(field_value)) |> IO.inspect
+  end
+
   @doc """
   Function to delete all documents from the Solr Index
 
@@ -49,7 +65,9 @@ defmodule Exsolr.Indexer do
   defp update_request(headers, body) do
     Config.update_url
     |> HTTPoison.post(body, headers, Config.options)
+    |> IO.inspect(label: "Post")
     |> HttpResponse.body
+    |> IO.inspect(label: "Resp Body")
   end
 
   defp json_headers, do: [{"Content-Type", "application/json"}]
@@ -74,6 +92,13 @@ defmodule Exsolr.Indexer do
   end
   def delete_by_id_json_body(id) do
     {:ok, body} = %{delete: %{id: id}}
+                  |> Poison.encode
+
+    body
+  end
+
+  def delete_by_query_json_body(field_value) do
+    {:ok, body} = %{delete: %{query: "#{field_value}"}}
                   |> Poison.encode
 
     body
