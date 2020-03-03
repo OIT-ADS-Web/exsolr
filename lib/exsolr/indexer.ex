@@ -42,7 +42,7 @@ defmodule Exsolr.Indexer do
   https://cwiki.apache.org/confluence/display/solr/Uploading+Data+with+Index+Handlers#UploadingDatawithIndexHandlers-JSONFormattedIndexUpdates
   """
   def delete_by_query(field_value) do
-    update_request(json_headers, delete_by_query_json_body(field_value)) |> IO.inspect
+    update_request(json_headers, delete_by_query_json_body(field_value))
   end
 
   @doc """
@@ -65,9 +65,7 @@ defmodule Exsolr.Indexer do
   defp update_request(headers, body) do
     Config.update_url
     |> HTTPoison.post(body, headers, Config.options)
-    |> IO.inspect(label: "Post")
     |> HttpResponse.body
-    |> IO.inspect(label: "Resp Body")
   end
 
   defp json_headers, do: [{"Content-Type", "application/json"}]
@@ -99,7 +97,7 @@ defmodule Exsolr.Indexer do
 
   def delete_by_query_json_body(field_value) do
     {:ok, body} = %{delete: %{query: "#{field_value}"}}
-                  |> Poison.encode
+                  |> Jason.encode
 
     body
   end
